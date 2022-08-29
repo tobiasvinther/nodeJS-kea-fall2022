@@ -8,17 +8,24 @@ const alienMessage = {
 };
 
 // Log the message 
-
+console.log(alienMessage.message)
 // --------------------------------------
 // Exercise 2 - Defining an object. 
 
 // Create an object that has your name and age. 
-
+const me = {
+	name: "Tobias",
+	age: 37
+}
 
 // --------------------------------------
 // Exercise 3 - Add a property 
 
-const stackOverflow = {};
+const stackOverflow = {
+	rule: {
+		isAllowed: true
+	}
+};
 
 // make a rule called isAllowed and let the value be true
 
@@ -30,6 +37,8 @@ const thisSong = {
 }
 
 // remove the property "description" and add a property called "about" that should say "Just a tribute." 
+delete thisSong.description
+thisSong.about = "Just a tribute"
 
 
 // --------------------------------------
