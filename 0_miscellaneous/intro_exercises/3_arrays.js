@@ -14,13 +14,13 @@ console.log(letters[1])
 
 const friends = [];
 
-// What a lonely array. Add at least 3 friend objects to it without touching the line above.  
-friends.push("Chandler")
-friends.push("Ross")
-friends.push("Joey")
-friends.push("Monica")
-friends.push("Rachel")
-friends.push("Phoebe")
+// What a lonely array. Add at least 3 friend objects to it without touching the line above. 
+friends.push({name: "Chandler"})
+friends.push({name: "Ross"})
+friends.push({name: "Joey"})
+friends.push({name: "Monica"})
+friends.push({name: "Rachel"})
+friends.push({name: "Phoebe"})
 console.log(friends)
 
 
