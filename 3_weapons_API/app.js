@@ -92,8 +92,8 @@ app.delete("/weapons/:id", (req, res) => {
     if(!weapon) {
         return res.status(404).send("No weapon with this id exists")
     } else {
+        weapons = weapons.filter(w => w.id !== parseInt(req.params.id))
         console.log("Deleted:", weapon)
-        weapons = weapons.filter(w => w.id != req.params.id)
         res.send({data: weapons}) 
     }
 })
