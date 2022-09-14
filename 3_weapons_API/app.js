@@ -26,7 +26,7 @@ let weapons = [
 ]
 
 //front page
-app.get("/", (req, res)  => {
+app.get("/", (req, res) => {
     res.send( "<h1>Welcome... to the Weapons Emporium!</h1>" )
 })
 
@@ -36,11 +36,11 @@ app.get("/weapons", (req, res) => {
 })
 
 //GET - get weapon by id
-app.get("/weapons/:id", (req, res)  => {
+app.get("/weapons/:id", (req, res) => {
     const weapon =  weapons.find(w => w.id === parseInt(req.params.id)) //note: weapon is a reference to the object we find, not a copy. 
 
     if(!weapon) {
-        return res.status(404).send('No weapon with this id exists')
+        return res.status(404).send("No weapon with this id exists")
     } else {
         res.send({data: weapon}) 
     }  
@@ -55,11 +55,11 @@ app.post("/weapons", (req, res) => {
 })
 
 //PUT - update a weapon resource
-app.put('/weapons/:id',(req,res)=>{
+app.put("/weapons/:id", (req, res) => {
     const weapon =  weapons.find(w => w.id === parseInt(req.params.id))
 
     if(!weapon) {
-        return res.status(404).send('No weapon with this id exists') 
+        return res.status(404).send("No weapon with this id exists") 
     } else {
        weapon.name = req.body.name; 
        weapon.type = req.body.type; 
@@ -69,11 +69,11 @@ app.put('/weapons/:id',(req,res)=>{
 })
 
 //PATCH - update part of a weapon resource
-app.patch('/weapons/:id',(req,res)=>{
+app.patch("/weapons/:id", (req, res) => {
     const weapon =  weapons.find(w => w.id === parseInt(req.params.id))
 
     if(!weapon) {
-        return res.status(404).send('No weapon with this id exists')
+        return res.status(404).send("No weapon with this id exists")
     }
     if(req.body.name) {
         weapon.name = req.body.name; 
@@ -86,11 +86,11 @@ app.patch('/weapons/:id',(req,res)=>{
 })
 
 //DELETE - delete a weapon resource
-app.delete("/weapons/:id", (req, res)  => {
+app.delete("/weapons/:id", (req, res) => {
     const weapon =  weapons.find(w => w.id === parseInt(req.params.id))
 
     if(!weapon) {
-        return res.status(404).send('No weapon with this id exists')
+        return res.status(404).send("No weapon with this id exists")
     } else {
         console.log("Deleted:", weapon)
         weapons = weapons.filter(w => w.id != req.params.id)
