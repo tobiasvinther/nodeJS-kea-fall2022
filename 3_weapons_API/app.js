@@ -37,13 +37,20 @@ app.get("/weapons", (req, res) => {
 
 //GET - get weapon by id
 app.get("/weapons/:id", (req, res) => {
-    const weapon =  weapons.find(w => w.id === parseInt(req.params.id)) //note: weapon is a reference to the object we find, not a copy. 
+    const foundWeapon = weapons.find(weapon => weapon.id === parseInt(req.params.id)) //note: weapon is a reference to the object we find, not a copy. 
 
-    if(!weapon) {
-        return res.status(404).send("No weapon with this id exists")
+    if(!foundWeapon) {
+        return res.status(404).send({error: "No weapon with this id exists"})
     } else {
-        res.send({data: weapon}) 
+        res.send({data: foundWeapon}) 
     }  
+})
+
+//TODO: define a route that returns the date
+app.get("/date", (req, res) => {
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    res.send({message: days[new Date().getDay()]})
+
 })
 
 //POST - create a weapon resource
@@ -56,45 +63,77 @@ app.post("/weapons", (req, res) => {
 
 //PUT - update a weapon resource
 app.put("/weapons/:id", (req, res) => {
-    const weapon =  weapons.find(w => w.id === parseInt(req.params.id))
+    const foundWeapon =  weapons.find(weapon => weapon.id === parseInt(req.params.id))
 
-    if(!weapon) {
-        return res.status(404).send("No weapon with this id exists") 
+    if(!foundWeapon) {
+        return res.status(404).send({error: "No weapon with this id exists"}) 
     } else {
-       weapon.name = req.body.name; 
-       weapon.type = req.body.type; 
+       foundWeapon.name = req.body.name; 
+       foundWeapon.type = req.body.type; 
     }
     
-    res.send({data: weapon})
+    res.send({data: foundWeapon})
 })
 
 //PATCH - update part of a weapon resource
 app.patch("/weapons/:id", (req, res) => {
-    const weapon =  weapons.find(w => w.id === parseInt(req.params.id))
+    /*
+    const foundWeapon =  weapons.find(weapon => weapon.id === parseInt(req.params.id))
 
-    if(!weapon) {
-        return res.status(404).send("No weapon with this id exists")
+    if(!foundWeapon) {
+        return res.status(404).send({error: "No weapon with this id exists"})
     }
     if(req.body.name) {
-        weapon.name = req.body.name; 
+        foundWeapon.name = req.body.name; 
     }
     if(req.body.type) {
-        weapon.type = req.body.type; 
+        foundWeapon.type = req.body.type; 
     }
   
-    res.send({data: weapon})
+    res.send({data: foundWeapon})
+    */
+
+    const requestedId = Number(req.params.id)
+    const foundIndex = weapons.findIndex(weapon => weapon.id === parseInt(requestedId))
+
+    if(foundIndex !== -1) {
+        const foundWeapon = weapons[foundIndex]
+        //spreading two objects like this combines them and the last object will overwrite if they have the same keys. Id is "hardcoded" here.
+        const weaponToUpdate = {...foundWeapon, ...req.body, id: requestedId} 
+        weapons[foundIndex] = weaponToUpdate
+        res.send({data: weaponToUpdate})
+    } else {
+        return res.status(404).send({
+            data: undefined, 
+            message: `No weapon with this id exists:  ${requestedId}`})
+    }
+
 })
 
 //DELETE - delete a weapon resource
 app.delete("/weapons/:id", (req, res) => {
-    const weapon =  weapons.find(w => w.id === parseInt(req.params.id))
+    /*
+    const foundWeapon =  weapons.find(weapon => weapon.id === parseInt(req.params.id))
 
-    if(!weapon) {
+    if(!foundWeapon) {
         return res.status(404).send("No weapon with this id exists")
     } else {
-        weapons = weapons.filter(w => w.id !== parseInt(req.params.id))
-        console.log("Deleted:", weapon)
+        weapons = weapons.filter(weapon => weapon.id !== parseInt(req.params.id))
+        console.log("Deleted:", foundWeapon)
         res.send({data: weapons}) 
+    }
+    */
+
+    const requestedId = Number(req.params.id)
+    const foundIndex = weapons.findIndex(weapon => weapon.id === parseInt(requestedId))
+
+    if(foundIndex !== -1) {
+        const deletedWeapon = weapons.splice(foundIndex, 1)[0]
+        res.send({data: deletedWeapon}) 
+    } else {
+        return res.status(404).send({
+            data: undefined, 
+            message: `No weapon with this id exists:  ${requestedId}`})
     }
 })
 

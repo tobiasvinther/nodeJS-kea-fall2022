@@ -1,6 +1,8 @@
 const express = require("express") //import express
 const app = express() //instantiation of the library express
 
+app.use(express.json())
+
 //route to an endpoint
 app.get("/", (request, response) => {
     response.send({message: "Created my first route"})
@@ -40,6 +42,10 @@ app.get("/actors", (req, res) => {
         message: "Information about the actor",
         ...req.query
     })
+})
+
+app.post("/actors", (req, res) => {
+    res.send({data: req.body})
 })
 
 //define which port to listen to, starts the server
