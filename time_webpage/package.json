@@ -6,6 +6,10 @@
   },
   "scripts": {
     "start-dev": "nodemon app.js",
-    "start-prod": "node app.js"
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tobiasvinther/nodeJS-kea-fall2022/tree/main/time_webpage"
   }
 }
