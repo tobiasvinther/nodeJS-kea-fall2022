@@ -1,3 +1,18 @@
 body {
     background: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/131442/90swallpaper.jpg');
 }
+
+.blink {
+    animation: blink-animation 1s steps(5, start) infinite;
+    -webkit-animation: blink-animation 1s steps(5, start) infinite;
+  }
+  @keyframes blink-animation {
+    to {
+      visibility: hidden;
+    }
+  }
+  @-webkit-keyframes blink-animation {
+    to {
+      visibility: hidden;
+    }
+  }
