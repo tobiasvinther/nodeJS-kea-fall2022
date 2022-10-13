@@ -1,0 +1,7 @@
+.nav-link.active {
+    background-color: dodgerblue  !important;
+}
+
+.nav-link {
+    text-align: start;
+}

@@ -1,7 +1,8 @@
 import express from "express"
 import path from "path"
+import pokemonRouter from "./routers/pokemonRouter.js"
 
-import { renderPage, battlePage } from "./util/templateEngine.js"
+import { renderPage, battlePage, injectData } from "./util/templateEngine.js"
 
 //instantiate express, start a server
 //we don't use require, because we use 'import'. Require was the traditional way to import
@@ -17,24 +18,26 @@ const frontpagePage = renderPage("/frontpage/frontpage.html",
 
 const contactPage = renderPage("/contact/contact.html") //we don't specify options, because we don't need them on this page
 
+
 app.get("/", (req, res) => {
     res.send(frontpagePage)
 })
 
-app.get("/battle/:pokemonName", (req, res) => {
-    res.send(battlePage.replace("%%TAB_TITLE%%", `Battle ${req.params.pokemonName}`))
-});
-
+const randomPokemon = ["pikachu", "slowpoke", "ditto"];
 app.get("/battle", (req, res) => {
-    const randomPokemon = "pikachu"
-    res.redirect(path.resolve(`battle/${randomPokemon}`))
+    res.redirect(`battle/${randomPokemon[Math.floor(Math.random() * randomPokemon.length)]}`)
 });
 
-app.get("/api/pokemon", (req, res) => {
-    fetch("https://pokeapi.co/api/v2/pokemon")
-    .then(response => response.json())
-    .then(result => res.send({ data: result }))
+app.get("/battle/:pokemonName", (req, res) => {
+    const pokemonName = req.params.pokemonName
+    let battlePageWithData = injectData(battlePage, {pokemonName})
+    //const listOfNumbers = [1, 2, 3, 4]
+    //battlePageWithData = injectData(battlePageWithData, {listOfNumbers})
+    //battlePageWithData = injectData(battlePageWithData, {somethingNew: 1234})
+    res.send(battlePageWithData.replace("%%TAB_TITLE%%", `Battle ${req.params.pokemonName}`))
 });
+    
+app.use(pokemonRouter)
 
 app.get("/contact", (req, res) => {
     res.send(contactPage)

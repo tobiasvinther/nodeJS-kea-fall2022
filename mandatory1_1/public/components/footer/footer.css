@@ -1,0 +1,4 @@
+/*Making room for a "sticky footer"*/
+main {
+    min-height: calc(100vh - 105px);
+}

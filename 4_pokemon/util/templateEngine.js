@@ -23,4 +23,8 @@ export const battlePage = navComponent
                     )
                     + battle + footerComponent;
 
-
+export function injectData(pageString, data) {
+    const brokenUpHTML = pageString.split("</head>")
+    const variableName = Object.keys(data)[0]
+    return brokenUpHTML[0] + `<script>const ${variableName} = ${JSON.stringify(data[variableName])}</script></head>` + brokenUpHTML[1]
+}

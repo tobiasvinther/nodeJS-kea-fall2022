@@ -3,7 +3,6 @@ import path from "path"
 import { renderPage } from "./util/templateEngine.js"
 import { users, documentation } from "./database.js"
 import { checkIfUserExists } from "./signupService.js"
-import { tab, tabContent, editContent } from "./documentationRenderHelper.js"
 
 const app = express()
 
@@ -15,6 +14,7 @@ app.use(express.urlencoded({ extended: true}));
 const indexPage = renderPage("/frontpage/index.html", 
 { 
     tabTitle: "Fake Website", 
+    //cssLink: `<link rel="stylesheet" href="/pages/frontpage/frontpage.css">` 
     cssLink: "" 
 })
 
@@ -45,14 +45,7 @@ const forgotPasswordPage = renderPage("/forgot-password/forgot-password.html",
 const nodeDocumentationPage = renderPage("/node-documentation/node-documentation.html", 
 { 
     tabTitle: "NodeJS documentation",
-    cssLink: `<link rel="stylesheet" href="/pages/node-documentation/node-documentation.css">`,
-    content: `<div id="content" class="container d-flex">
-    <div class="d-flex align-items-start mt-4">
-      <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">` 
-      + tab 
-      + `</div><div class="tab-content" id="v-pills-tabContent">`
-      + tabContent
-      + "</div>"
+    cssLink: `<link rel="stylesheet" href="/pages/node-documentation/node-documentation.css">`
 })
 
 app.get("/", (req, res) => {
@@ -79,35 +72,9 @@ app.get("/node-documentation", (req, res) => {
     res.send(nodeDocumentationPage)
 })
 
-app.get("/node-documentation/:id", (req, res) => {
-    const id = req.params.id
-    const nodeDocumentationEditPage = renderPage("/node-documentation/node-documentation-edit.html",
-        {
-            tabTitle: "Edit documentation",
-            cssLink: "",
-            content: `<textarea rows=16 class="mx-3">${editContent(id)}</textarea>`
-            //content: `<div id="content" class="container d-flex justify-content-center mt-5"><textarea cols="300" rows="20">${editContent(id)}</textarea></div>`
-        })
-    res.send(nodeDocumentationEditPage)
-})
-
-app.patch("/node-documentation/:id", (req, res) => {
-    const foundIndex = documentation.findIndex(doc => doc.id === req.params.id);
-    if (foundIndex !== -1) {
-        const foundDoc = documentation[foundIndex];
-        const docToUpdate = { ...foundDoc, ...req.body, id: req.params.id };
-        documentation[foundIndex] = docToUpdate;
-        res.sendStatus(200)
-    } else {
-        res.status(404).send({ data: undefined, message: `No doc found by id: ${req.params.id}` });
-    }
-})
-
-/*
 app.get("/api/node-documentation/", (req, res) => {
     res.send(documentation)
 })
-*/
 
 //POST - create new user
 app.post("/signup", (req, res) => {

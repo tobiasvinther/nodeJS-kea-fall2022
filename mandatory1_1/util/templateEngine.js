@@ -10,6 +10,6 @@ export function renderPage(path, options = {}) {
         .replace("%%TAB_TITLE%%", options.tabTitle || "Mandatory 1")
         .replace("%%PAGE_CSS_LINK%%",
             options.cssLink || "") 
-        + page.replace("%%PAGE_CONTENT%%", options.content || "")
+        + page
         + footerComponent;
 }
