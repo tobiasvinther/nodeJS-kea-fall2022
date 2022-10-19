@@ -1,28 +1,23 @@
 //import {makeOptions} from "./utils/fetchUtils.js";
+const pathVariables = location.pathname.split("/")
+const pathVariableId = pathVariables[pathVariables.length-1]
 
-const editButton = document.getElementById("btn-edit-id").addEventListener("click", toggle);
+const editButton = document.getElementById("btn-edit-id").addEventListener("click", saveEdit);
 
-function toggle() {
+function saveEdit() {
 
-    console.log('hello!')
+    fetch("/node-documentation/" + pathVariableId, {
+        method: "PATCH",
+        body: JSON.stringify({
+            text: document.getElementById("documentation-text-id").value,
+        }),
+        headers: {
+            "Content-type": "application/json",
+            "Accept": "application/json",
+            "Access-Control-Allow-Origin": "*"
+        },
+    })
 
-    /*
-    let riderRequest = {
-        "name" : document.getElementById("name-id").value,
-        "country" : document.getElementById("country-id").value, 
-        "teamName" : document.getElementById("team-select").value }
-
-    fetch(URL + "/riders/edit/" +  riderId, makeOptions("PATCH", riderRequest))
-        .then(res=>{
-            if(!res.ok){
-                return Promise.reject("Error: " + res.status)
-            }
-            return res.json()
-        })
-        .catch(e => console.error(e))
-
-        alert("Rytter gemt")
-        window.location.href = "/#/riders";
-    */
-    
+    alert("Changes saved!")
+    console.log(document.getElementById("documentation-text-id").value)
 }

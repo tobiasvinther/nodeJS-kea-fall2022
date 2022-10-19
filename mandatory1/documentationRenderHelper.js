@@ -9,8 +9,8 @@ export const tab = documentation.map(documentationSnippet =>
     `
     ).join("\n")
 
-
-export const tabContent = documentation.map(documentationSnippet => 
+export function tabContent() { 
+    return documentation.map(documentationSnippet => 
     `
     <div class="tab-pane fade${documentationSnippet.show}" id="v-pills-${documentationSnippet.id}" role="tabpanel" aria-labelledby="v-pills-${documentationSnippet.id}-tab">
     ${documentationSnippet.text}
@@ -19,7 +19,7 @@ export const tabContent = documentation.map(documentationSnippet =>
     </div>  
     `
     ).join("\n")
-
+}
 export function editContent(receivedId) {
     const foundDocumentation = documentation.find(doc => doc.id === receivedId)
     return foundDocumentation.text

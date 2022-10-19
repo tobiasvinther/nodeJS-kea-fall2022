@@ -1,15 +1,19 @@
 import express from "express"
 import path from "path"
+import cookieParser from "cookie-parser"
+import session from "express-session"
 import { renderPage } from "./util/templateEngine.js"
 import { users, documentation } from "./database.js"
-import { checkIfUserExists } from "./signupService.js"
+import { checkIfUserExists, findUserByEmail } from "./signupService.js"
 import { tab, tabContent, editContent } from "./documentationRenderHelper.js"
 
 const app = express()
 
 app.use(express.static("public"))
-app.use(express.json());
-app.use(express.urlencoded({ extended: true}));
+app.use(express.json())
+app.use(express.urlencoded({ extended: true}))
+app.use(cookieParser())
+//app.use(session)
 
 
 const indexPage = renderPage("/frontpage/index.html", 
@@ -42,18 +46,6 @@ const forgotPasswordPage = renderPage("/forgot-password/forgot-password.html",
     cssLink: "" 
 })
 
-const nodeDocumentationPage = renderPage("/node-documentation/node-documentation.html", 
-{ 
-    tabTitle: "NodeJS documentation",
-    cssLink: `<link rel="stylesheet" href="/pages/node-documentation/node-documentation.css">`,
-    content: `<div id="content" class="container d-flex">
-    <div class="d-flex align-items-start mt-4">
-      <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">` 
-      + tab 
-      + `</div><div class="tab-content" id="v-pills-tabContent">`
-      + tabContent
-      + "</div>"
-})
 
 app.get("/", (req, res) => {
     res.send(indexPage)
@@ -76,6 +68,18 @@ app.get("/forgot-password", (req, res) => {
 })
 
 app.get("/node-documentation", (req, res) => {
+    const nodeDocumentationPage = renderPage("/node-documentation/node-documentation.html", 
+{ 
+    tabTitle: "NodeJS documentation",
+    cssLink: `<link rel="stylesheet" href="/pages/node-documentation/node-documentation.css">`,
+    content: `<div id="content" class="container d-flex">
+    <div class="d-flex align-items-start mt-4">
+      <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">` 
+      + tab 
+      + `</div><div class="tab-content" id="v-pills-tabContent">`
+      + tabContent()
+      + "</div>"
+})
     res.send(nodeDocumentationPage)
 })
 
@@ -85,29 +89,18 @@ app.get("/node-documentation/:id", (req, res) => {
         {
             tabTitle: "Edit documentation",
             cssLink: "",
-            content: `<textarea rows=16 class="mx-3">${editContent(id)}</textarea>`
-            //content: `<div id="content" class="container d-flex justify-content-center mt-5"><textarea cols="300" rows="20">${editContent(id)}</textarea></div>`
+            content: `<textarea id="documentation-text-id" rows=16 class="mx-3">${editContent(id)}</textarea>`
         })
     res.send(nodeDocumentationEditPage)
 })
 
 app.patch("/node-documentation/:id", (req, res) => {
-    const foundIndex = documentation.findIndex(doc => doc.id === req.params.id);
-    if (foundIndex !== -1) {
-        const foundDoc = documentation[foundIndex];
-        const docToUpdate = { ...foundDoc, ...req.body, id: req.params.id };
-        documentation[foundIndex] = docToUpdate;
-        res.sendStatus(200)
-    } else {
-        res.status(404).send({ data: undefined, message: `No doc found by id: ${req.params.id}` });
-    }
+    documentation.find(doc => doc.id === req.params.id).text = req.body.text
+    const foundDocumentation = documentation.find(doc => doc.id === req.params.id)
+    console.log("Patch request processed successfully")
+    console.log(foundDocumentation.text)
+    res.send({ data: documentation })
 })
-
-/*
-app.get("/api/node-documentation/", (req, res) => {
-    res.send(documentation)
-})
-*/
 
 //POST - create new user
 app.post("/signup", (req, res) => {
@@ -120,6 +113,23 @@ app.post("/signup", (req, res) => {
     }
     res.send({data: users})
 })
+
+//POST - signin
+app.post("/signin", (req, res) => {
+    console.log("Login attempt")
+    if(checkIfUserExists(users, req.body.email) === true) {
+        const user = findUserByEmail(req.body.email)
+        if(user.password === req.body.password) {
+        console.log("Login successful")
+        res.cookie("email", user.email)
+        res.send("Nice! You are successfully logged in.")
+        }
+    } else {
+        console.log("User doesn't exist")
+        res.send("Failed to log in!")
+    }
+})
+
 
 const PORT = process.env.PORT || 8080;
 
