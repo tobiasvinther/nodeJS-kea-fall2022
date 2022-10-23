@@ -48,21 +48,27 @@ export let documentation = [
         - PUT<br>
         - PATCH<br>
         - DELETE<br>
-        <br>
-        <b>Package.json</b><br>
-        First and foremost, you need a couple of curly brackets, so it reads as JSON. Then, we can define properties, e.g.:<br>
-        <i>"dependencies": {<br>   
-        "express" : "^4.18.1"}</i><br>
-        This way our project "knows" that it needs express to run. It is like the pom.xml-file in a Maven project.
         `,
         active: " active",
         show: " active show",
         selected: "true"
     },
     {
-        id: "firstServer",
-        name: "First Server",
-        text: "<b>Sed ut perspiciatis</b> unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?",
+        id: "express",
+        name: "Express",
+        text: `
+        Express is a minimalist web framework for Node.js<br>
+        To use Express in our node.js app, we need to do a few things:
+        <ul>
+        <li>Add Express as a dependency in package.json</li>
+        <li>Install it by using the terminal command <i>npm install express</i></li>
+        <li>Import Express inside our app.js</li>
+        <li>Creating a new instance of Express by defining a variable, like so: <i>const app = express()</i></li>
+        <li>Have the server listen on a port (basic version below): 
+        <br><i>const server = app.listen(8080, () => {
+         <br>   console.log("Server is running on port 8080")
+        })</i></li>
+        `,
         active: "",
         show: "",
         selected: "false"
@@ -70,36 +76,80 @@ export let documentation = [
     {
         id: "servingHTML",
         name: "Serving HTML",
-        text: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?",
+        text: `
+        <b>Serving HTML</b><br>
+        In its simplest form, we can serve an HTML page like this in Node.js:<br>
+        <i>
+        app.get("/", (req, res) => {<br>
+            res.sendFile(path.resolve("./public/frontpage/frontpage.html"));<br>
+        });<br>
+        </i>
+        We can also send a variable, containing HTML:<br>
+        <i>app.get("/", (req, res) => {<br>
+            res.send(indexPage)<br>
+        })</i>
+        `,
         active: "",
         show: "",
         selected: "false"
     },
     {
-        id: "restAPI",
-        name: "Rest API",
+        id: "modules",
+        name: "Modules",
+        text: `
+        <b>Why we need a module system</b><br>
+        Since we don't want all of our JavaScript code inside one large file, we need to split it up into different files. In that way, we can better organize the code and we
+        can control which part of the code is accessible.
+        <br><br>
+        <b>CommonJS</b><br>
+        In Node.js each .js file is handled as a separate CommonJS module.
+        We need to specify which parts of the code that should be exported and imported.
+        <br>Below is an example of importing one of Node.js's built-in modules:<br>
+        <i>const http = require("http")</i><br>
+        And here we see an example of importing from another file:<br>
+        <i>const someFile = require("./someFile")</i><br>
+        <br>
+        <b>ES Modules</b><br>
+        The more modern way of using modules is to use ES Modules (ECMAScript Modules).
+        To use ES modules we need to specify it in package.json, like so: <i>"type": "module"</i><br>
+        Export example:<br>
+        <i>export const someVariable = "Hello"</i><br>
+        Import example:<br>
+        <i>import { someVariable } from "./someFile.js"</i><br>
+        <br>
+        <b>Differences between the two approaches</b><br>
+        CommonJS imports are dynamically resolved at runtime. When the code is executed, the require() function is run. This means that you can call it from anywhere in the code.
+        <br>
+        When using ES Modules, imports are static, meaning the execute at parse time. Imports are hoisted, so they are "moved" to the top of the file.
+        `,
+        active: "",
+        show: "",
+        selected: "false"
+    },
+    {
+        id: "packageAndCss",
+        name: "Package.json and CSS",
         text: `
         <b>The three duties of package.json</b><br>
+        Package.json handles three duties, as seen below.
         <ul>
         <li><b>Meta data:</b> is simply data about the application, e.g. "name" or "type".</li>
         <li><b>Dependencies:</b> are things we need to download for the application to work, such as express. Like in pom.xml when using Maven, the package.json is scanned and the relevant files are downloaded when typing <i>npm install</i> in the terminal.</li>
         <li><b>Scripts:</b> are custom scripts that we can define. E.g. in this project there is a script called “start” and when that is run by typing in <i>npm run start</i> in the console, it is the same as writing <i>node.js app.js</i>, because we have defined that in package.js</li>
         </ul>
-        <br>
-        <b>Defining and invoking scripts</b><br>
-        Some text
+        Inside the package.json file, you first and foremost need a couple of curly brackets, so it reads as JSON. Then, we can define properties, e.g.:<br>
+        <i>"dependencies": {<br>   
+        "express" : "^4.18.1"}</i><br>
+        This way our project "knows" that it needs express to run. It is like the pom.xml-file in a Maven project.
         <br><br>
-        <b>Using fetch</b><br>
-        Some text
-        <br><br>
-        <b>using CSS</b><br>
+        <b>Using CSS</b><br>
         There are basically three ways of applying CSS to your HTML pages:
         <ul>
         <li>Inline</li>
         <li>Via style tags in HTML</li>
         <li>CSS files</li>
         </ul>
-        Inline styling is quick and dirty. It will override stylings from other sources. The disadvatage is that it's not scalable, since it only applies to that specific line.<br>
+        Inline styling is quick and dirty. It will override stylings from other sources. The disadvantage is that it's not scalable, since it only applies to that specific line.<br>
         Style tags lets you define styles inside the HTML that applies to a class or an id. It will only apply to the page it's a part of. It's more scalable than inline, but takes up space in the HTML file.<br>
         CSS files are probably the preferred way of applying CSS. Here youwrite the CSS rules in a separate file and then import that file to your HTML. The same CSS file can then be imported to several HTML files.
         Bootstrap and similar styling libraries are basically very large CSS files that you can import and use. 
@@ -111,7 +161,23 @@ export let documentation = [
     {
         id: "fetchingRedirecting",
         name: "Fetching and redirecting",
-        text: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?",
+        text: `
+        <b>Using fetch</b><br>
+        Here is a simple example of the structure of the Fetch API:<br>
+        <i>fetch(www.somewebsite.com/someendpoint)
+        <br>.then((response) => response.json())
+        <br>.then((data) => console.log(data))</i>
+        <br>
+        Fetch returns a response as a promise, which you can tranform into JSON, for instance, and then the data can be used.
+        <br>
+        You can fetch from external sites or your own backend. Fetch can be used with safe HTML methods, such as GET, but also to POST, PATCH, etc.
+        <br><br>
+        <b>Redirecting</b><br>
+        <i>res.redirect([status, ] path)</i>
+        <br>
+        The status parameter is the status code to send, while the path parameter describes the path/page the app should redirect to.
+        <br>The status parameter is optional and is 302 by default.
+        `,
         active: "",
         show: "",
         selected: "false"
@@ -125,18 +191,10 @@ export let documentation = [
         selected: "false"
     },
     {
-        id: "injectingData",
-        name: "Injecting data",
-        text: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?",
-        active: "",
-        show: "",
-        selected: "false"
-    },
-    {
         id: "routes",
         name: "Routes",
         text: `<b>Routes</b><br>
-        Routes is a way of splitting up into separate files instead of having everything inside the app.js file. Instead, you import the route from another file:<br><br>
+        Routes is a way of splitting routes up into separate files instead of having everything inside the app.js file. Instead, you import the route from another file:<br><br>
         <i>import pokemonRouter from "./routers/pokemonRouter.js"<br>
         app.use(pokemonRouter)</i><br><br>
         PokemonRouter.js looks like this:<br><br>

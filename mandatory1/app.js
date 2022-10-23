@@ -94,6 +94,7 @@ app.get("/node-documentation/:id", (req, res) => {
     res.send(nodeDocumentationEditPage)
 })
 
+//PATCH - edit documentation
 app.patch("/node-documentation/:id", (req, res) => {
     documentation.find(doc => doc.id === req.params.id).text = req.body.text
     const foundDocumentation = documentation.find(doc => doc.id === req.params.id)
@@ -122,7 +123,8 @@ app.post("/signin", (req, res) => {
         if(user.password === req.body.password) {
         console.log("Login successful")
         res.cookie("email", user.email)
-        res.send("Nice! You are successfully logged in.")
+        //res.send("Nice! You are successfully logged in.")
+        res.redirect("/")
         }
     } else {
         console.log("User doesn't exist")
@@ -131,7 +133,7 @@ app.post("/signin", (req, res) => {
 })
 
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8080
 
 //listen on a port
 const server = app.listen(PORT, (error) => {
@@ -139,4 +141,4 @@ const server = app.listen(PORT, (error) => {
         console.log(error);
     }
     console.log("Server is running on port", server.address().port)
-});
+})
