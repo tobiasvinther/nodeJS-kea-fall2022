@@ -5,6 +5,10 @@
   import svelteLogo from './assets/svelte.svg'
   import Counter from './lib/Counter.svelte'
 
+  function handleGoToEvent() {
+    
+  }
+
   let database = [
     {
       id : 1,
@@ -47,7 +51,8 @@
   <Event eventTitle={currentEvent.title}/>
   <EventText eventText={currentEvent.text}/>
   {#each currentChoices as choice (choice.id)}
-    <Choice choiceText={choice.text} goto={url + "events/" + choice.id.toString()}/>
+    <!--<Choice choiceText={choice.text} goto={url + "events/" + choice.id.toString()}/>-->
+    <Choice choiceText={choice.text} onGoToEvent={handleGoToEvent}/>
   {/each}
 
 </main>
