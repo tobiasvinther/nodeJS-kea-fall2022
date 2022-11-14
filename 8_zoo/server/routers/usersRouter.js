@@ -29,6 +29,10 @@ router.post("/api/signin", async (req, res) => {
     console.log(receivedEmail)
     console.log(receivedPassword)
 
+    if(!receivedEmail || !receivedPassword || receivedEmail === "" || receivedPassword === "") {
+        res.sendStatus(401)
+    }
+
     const result = await db.get(`SELECT * FROM users WHERE email = ?`, receivedEmail)
     console.log(result)
 
@@ -38,9 +42,10 @@ router.post("/api/signin", async (req, res) => {
 
     if(passwordComparison) {
         res.sendStatus(200)
-    } else {
-        res.sendStatus(403)
     }
+    
+    //res.sendStatus(401)
+    
     
 });
 
