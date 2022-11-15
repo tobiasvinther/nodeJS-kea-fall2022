@@ -4,6 +4,8 @@
   import Home from "./pages/Home/Home.svelte";
   import Signin from "./pages/Signin/Signin.svelte";
   import Secrets from "./pages/Secrets/Secrets.svelte";
+  import Contact from "./pages/Contact/Contact.svelte";
+  import Footer from "./components/Footer/Footer.svelte";
 </script>
 
 <Router>
@@ -18,6 +20,9 @@
       <span class="link-item">
         <Link to="/secrets">Secrets</Link>
       </span>
+      <span class="link-item">
+        <Link to="/contact">Contact</Link>
+      </span>
     </ul>
   </nav>
   
@@ -25,8 +30,11 @@
       <Route path="/"><Home /></Route>
       <Route path="/signin"><Signin /></Route>
       <Route path="/secrets"><Secrets /></Route>
+      <Route path="/contact"><Contact /></Route>
   </div>
 </Router>
+
+<!--<Footer></Footer>-->
 
 <style>
 	ul {

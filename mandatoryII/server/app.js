@@ -20,10 +20,21 @@ const generalRateLimiter = rateLimit({
 
 app.use(generalRateLimiter)
 
+const authRateLimiter = rateLimit({
+	windowMs: 10 * 60 * 1000,
+	max: 3, 
+	standardHeaders: true,
+	legacyHeaders: false, 
+})
+
+app.use("/api/signin", authRateLimiter)
+
 
 import usersRouter from "./routers/usersRouter.js";
 app.use(usersRouter);
 
+import contactRouter from "./routers/contactRouter.js"
+app.use(contactRouter)
 
 
 const PORT = 8080 || process.env.PORT;

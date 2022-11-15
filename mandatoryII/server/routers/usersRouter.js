@@ -26,22 +26,24 @@ router.post("/api/users", async (req, res) => {
 router.post("/api/signin", async (req, res) => {
     const receivedEmail = req.body.email;
     const receivedPassword = req.body.password;
-    console.log(receivedEmail)
-    console.log(receivedPassword)
+    console.log("Recieved email:", receivedEmail)
+    console.log("Recieved password:", receivedPassword)
 
     if(!receivedEmail || !receivedPassword || receivedEmail === "" || receivedPassword === "") {
         res.sendStatus(401)
     }
 
     const result = await db.get(`SELECT * FROM users WHERE email = ?`, receivedEmail)
-    console.log(result)
+    console.log("Query:", result)
 
     const encryptedPassword = result.password
     const passwordComparison = await bcrypt.compare(receivedPassword, encryptedPassword)
-    console.log(passwordComparison)
+    console.log("Password matches:", passwordComparison)
 
-    if(passwordComparison) {
+    if(passwordComparison === true) {
+        console.log("Passwords match")
         res.sendStatus(200)
+        //res.redirect("http://localhost:5173")
     }
     
     //res.sendStatus(401)
