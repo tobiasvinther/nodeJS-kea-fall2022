@@ -10,6 +10,23 @@ import rateLimit from "express-rate-limit"
 import cors from "cors";
 app.use(cors());
 
+
+let logInObject = {isLoggedIn : false,}
+export {logInObject}
+
+/*
+//auth middleware
+function checkAuth(req, res, next) {
+
+	if(logInObject.isLoggedIn === false) {
+		res.sendStatus(401)
+	}
+    next()
+}
+
+app.use("/authentication", checkAuth)
+*/
+
 //rækkefølge på rateLimits er vigtig. Hvis general ligger sidst vil den override de foregående fx
 const generalRateLimiter = rateLimit({
 	windowMs: 10 * 60 * 1000,
@@ -21,7 +38,7 @@ const generalRateLimiter = rateLimit({
 app.use(generalRateLimiter)
 
 const authRateLimiter = rateLimit({
-	windowMs: 10 * 60 * 1000,
+	windowMs: 1 * 60 * 1000,
 	max: 3, 
 	standardHeaders: true,
 	legacyHeaders: false, 
@@ -29,12 +46,22 @@ const authRateLimiter = rateLimit({
 
 app.use("/api/signin", authRateLimiter)
 
+import session from "express-session"
+app.use(session({
+    secret: "keyboardcat",//process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } //we use http not https, so it needs to be false
+  }))
 
 import usersRouter from "./routers/usersRouter.js";
 app.use(usersRouter);
 
 import contactRouter from "./routers/contactRouter.js"
 app.use(contactRouter)
+
+import authenticateRouter from "./routers/authenticateRouter.js"
+app.use(authenticateRouter)
 
 
 const PORT = 8080 || process.env.PORT;

@@ -1,9 +1,11 @@
 <script>
+    import { toast } from '@zerodevx/svelte-toast'
+
     let name = ""
     let text = ""
 
-    async function sendEmail() {
-        const response = await fetch("http://localhost:8080/api/contact", {
+    function sendEmail() {
+        fetch("http://localhost:8080/api/contact", {
             method: "POST",
             body: JSON.stringify({
                 name: name,
@@ -15,22 +17,29 @@
                 "Access-Control-Allow-Origin": "*"
             },
         })
+        //.then(result => console.log(result))
+        .catch((error) => {
+                console.log(error)
+            });
         console.log("Called api/contact")
-        console.log(response.status)
+        //console.log(response.status)
+        name = ""
+        text = ""
+        toast.push('MESSAGE SENT')
         //navigate("/", { replace: false });
 
 }
 </script>
 
 <h2>Interface with us</h2>
-<p>We desire your thoughts. Record them below.</p>
+<p>We desire your thoughts. Send them to us.</p>
 
 <label>
-   Name <input type="text" name="name" value={name} /> 
+   Name <input type="text" name="name" bind:value={name} /> 
 </label>
 
 <br>
-<textarea rows=18 cols=36 value={text}></textarea>
+<textarea rows=18 cols=36 bind:value={text}></textarea>
 <br><br>
 
 <button type="submit" on:click|preventDefault={sendEmail}> SUBMIT </button>

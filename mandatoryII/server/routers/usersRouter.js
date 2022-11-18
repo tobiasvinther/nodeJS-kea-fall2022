@@ -1,13 +1,25 @@
 import { Router } from "express";
 const router = Router();
+
 import db from "../database/connection_sqlite.js";
 
 import bcrypt from "bcrypt"
+
+import { logInObject } from "../app.js"
 
 //GET - get all users - disable this eventually
 router.get("/api/users", async (req, res) => {
     const data = await db.all("SELECT * FROM users;");
     res.send({ data });
+});
+
+router.get('/api/logout', (req, res) => {
+    req.session.loggedIn = false
+    console.log(req.session)
+    req.session.destroy();
+    console.log(req.session)
+    logInObject.isLoggedIn = false
+    res.sendStatus(200)
 });
 
 //POST - sign up new user
@@ -32,23 +44,37 @@ router.post("/api/signin", async (req, res) => {
     if(!receivedEmail || !receivedPassword || receivedEmail === "" || receivedPassword === "") {
         res.sendStatus(401)
     }
+    try {
+        const result = await db.get(`SELECT * FROM users WHERE email = ?`, receivedEmail)
+        console.log("Query:", result)
 
-    const result = await db.get(`SELECT * FROM users WHERE email = ?`, receivedEmail)
-    console.log("Query:", result)
+        if(result === undefined) {
+            res.sendStatus(401)
+            console.log("result was undefined")
+        } else {
+            const encryptedPassword = result.password
+            const passwordComparison = await bcrypt.compare(receivedPassword, encryptedPassword)
+            console.log("Password matches:", passwordComparison)
 
-    const encryptedPassword = result.password
-    const passwordComparison = await bcrypt.compare(receivedPassword, encryptedPassword)
-    console.log("Password matches:", passwordComparison)
+            if(passwordComparison === true) {
+                //console.log("Passwords match")
+                req.session.loggedIn = true
+                logInObject.isLoggedIn = true
+                console.log(logInObject)
+                //req.session.save()
+                console.log("Session:", req.session)
+                res.sendStatus(200)
+            } else {
+                res.sendStatus(401).send("Passwords didn't match")
+            }
 
-    if(passwordComparison === true) {
-        console.log("Passwords match")
-        res.sendStatus(200)
-        //res.redirect("http://localhost:5173")
+        }
+
+        //res.sendStatus(401)
+    } catch {
+        console.error();
     }
-    
-    //res.sendStatus(401)
-    
-    
+
 });
 
 export default router;
