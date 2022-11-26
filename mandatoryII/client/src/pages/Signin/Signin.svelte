@@ -2,7 +2,7 @@
     import {navigate} from "svelte-navigator"
     import { toast } from '@zerodevx/svelte-toast'
 
-    import { SHOW_LOGIN } from "../../store/globals.js";
+    import { SHOW_LOGIN } from "../../store/globals.js"
 
     let email = "test1@mail.com"
     let password = "Test123"
@@ -10,25 +10,17 @@
     async function signIn() {
         if(email !== "" && password !== "") {
 
-          const response = await fetch("http://localhost:8080/api/signin", {
+          const response = await fetch("http://localhost:8080/api/login", {
             method: "POST",
+            credentials: "include",
             body: JSON.stringify({
                 email: email,
                 password: password
             }),
             headers: {
-                "Content-type": "application/json",
-                "Accept": "application/json",
-                "Access-Control-Allow-Origin": "*"
-            },
-            
+                "Content-Type": "application/json",
+            }, 
             })
-            /*.catch((error) => {
-                console.log(error)
-            });
-            */
-
-            console.log("Called api/signin")
 
             if(response.status === 429) {
                 console.log("Too many login attempts")
@@ -52,25 +44,31 @@
 
                 return
             }
+
             toast.push("Login successful", {
                     theme: {
                         '--toastColor': 'black',
                         '--toastBackground': 'rgb(0, 255, 0)',
                     }
             })
+
             console.log("Login successful")
             SHOW_LOGIN.set(false)
             navigate("/", { replace: false }); 
          
         } else {
             console.log("Email or password field is empty")
-            toast.push('Email/password required')
-        }
-           
+            toast.push('Email/password required', {
+                    theme: {
+                        '--toastColor': 'white',
+                        '--toastBackground': 'red',
+                    }    
+                })
+        }       
     }
 </script>
 
-<h2>Sign in</h2>
+<h2>Log in</h2>
 <form>
     <label>
         Email <input type="email" name="email" id="email-id" required bind:value={email} /> 

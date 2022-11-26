@@ -1,5 +1,5 @@
 import dotenv from "dotenv/config"
-/"/dotenv.config()
+//dotenv.config()
 import express from "express"
 const app = express()
 
@@ -90,5 +90,5 @@ app.get("*", (req, res) => {
 })
 
 
-const PORT = 8080
+const PORT = 8090
 app.listen(PORT, () => console.log("Server is running on port", PORT))

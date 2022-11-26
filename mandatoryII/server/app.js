@@ -1,31 +1,41 @@
-import express from "express";
-const app = express();
-app.use(express.json());
+import * as dotenv from "dotenv"
+dotenv.config()
+
+import express from "express"
+const app = express()
+app.use(express.json())
 
 import helmet from "helmet"
 app.use(helmet())
 
 import rateLimit from "express-rate-limit"
 
-import cors from "cors";
-app.use(cors());
+import cors from "cors"
+app.use(cors({ credentials: true, origin: true }))
 
+import session from "express-session"
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { 
+		secure: false,
+	 } 
+  }))
 
-let logInObject = {isLoggedIn : false,}
-export {logInObject}
+let loggedInUsers = {loggedIn: []}
+export {loggedInUsers}
 
-/*
-//auth middleware
-function checkAuth(req, res, next) {
-
-	if(logInObject.isLoggedIn === false) {
-		res.sendStatus(401)
+function isAuth (req, res, next) {
+	if(req.session?.isLoggedIn) {
+		console.log("isAuth = true")
+		next()
+	} else {
+		console.log("isAuth = false")
+		next()
 	}
-    next()
 }
-
-app.use("/authentication", checkAuth)
-*/
+app.use(isAuth)
 
 //rækkefølge på rateLimits er vigtig. Hvis general ligger sidst vil den override de foregående fx
 const generalRateLimiter = rateLimit({
@@ -46,15 +56,8 @@ const authRateLimiter = rateLimit({
 
 app.use("/api/signin", authRateLimiter)
 
-import session from "express-session"
-app.use(session({
-    secret: "keyboardcat",//process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false } //we use http not https, so it needs to be false
-  }))
 
-import usersRouter from "./routers/usersRouter.js";
+import usersRouter from "./routers/usersRouter.js"
 app.use(usersRouter);
 
 import contactRouter from "./routers/contactRouter.js"
@@ -64,5 +67,5 @@ import authenticateRouter from "./routers/authenticateRouter.js"
 app.use(authenticateRouter)
 
 
-const PORT = 8080 || process.env.PORT;
-app.listen(PORT, () => console.log("Server is running on port", PORT));
+const PORT = 8080 || process.env.PORT
+app.listen(PORT, () => console.log("Server is running on port", PORT))
